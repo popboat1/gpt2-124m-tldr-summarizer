@@ -1,7 +1,17 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import LossChart from '../components/LossChart'
+import MermaidDiagram from '../components/MermaidDiagram'
 
 export default function Landing() {
+  const ppoDiagram = `
+graph TD;
+    A[Pretrained Model] --> B(SFT Model);
+    B --> C{PPO Optimization};
+    C --> D[Final Model];
+    E[Reward Model] -.-> C;
+`;
+
   return (
     <main className="max-w-container-max mx-auto px-md md:px-gutter pb-xl">
       {/* Hero Section */}
@@ -72,7 +82,9 @@ export default function Landing() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="flex flex-col gap-4"
         >
-          <img src="/plots/pretrain_loss.png" alt="Pretrain Loss" className="w-full rounded-DEFAULT border border-outline-variant shadow-stroke" />
+          <div className="w-full h-full min-h-[300px]">
+            <LossChart dataUrl="/logs/pretraining_log.txt" />
+          </div>
           <img src="/plots/sft_loss.png" alt="SFT Loss" className="w-full rounded-DEFAULT border border-outline-variant shadow-stroke" />
         </motion.div>
       </section>
@@ -97,26 +109,8 @@ export default function Landing() {
           className="relative max-w-[800px] mx-auto bg-surface-container-lowest border border-outline-variant rounded-DEFAULT p-xl shadow-stroke"
         >
           {/* Abstract Diagram */}
-          <div className="flex justify-between items-center relative">
-            {/* Actor */}
-            <div className="flex flex-col items-center gap-sm z-10 bg-surface-container-lowest p-md border border-outline-variant rounded-DEFAULT">
-              <div className="w-16 h-16 border-2 border-primary rounded-full flex items-center justify-center bg-primary-container/10">
-                <span className="material-symbols-outlined text-primary">psychology</span>
-              </div>
-              <span className="font-mono-label text-mono-label">Actor (Policy)</span>
-            </div>
-            {/* Flow lines */}
-            <div className="absolute top-1/2 left-0 w-full h-px bg-outline-variant -z-0 border-dashed border-t"></div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-surface-container-lowest px-sm z-10">
-              <span className="material-symbols-outlined text-secondary text-sm">arrow_forward</span>
-            </div>
-            {/* Critic */}
-            <div className="flex flex-col items-center gap-sm z-10 bg-surface-container-lowest p-md border border-outline-variant rounded-DEFAULT">
-              <div className="w-16 h-16 border-2 border-on-surface rounded-DEFAULT flex items-center justify-center bg-surface-variant">
-                <span className="material-symbols-outlined text-on-surface">gavel</span>
-              </div>
-              <span className="font-mono-label text-mono-label">Critic (Value)</span>
-            </div>
+          <div className="w-full">
+            <MermaidDiagram chart={ppoDiagram} />
           </div>
           <div className="mt-lg text-center">
             <p className="font-body-md text-body-md text-on-surface-variant max-w-[600px] mx-auto">
