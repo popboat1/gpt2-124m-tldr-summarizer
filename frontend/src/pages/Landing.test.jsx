@@ -5,9 +5,10 @@ import { BrowserRouter } from 'react-router-dom'
 
 
 describe('Landing Page', () => {
-  it('renders title and start button', () => {
+  it('renders title and buttons', () => {
     render(<BrowserRouter><Landing /></BrowserRouter>)
     expect(screen.getByRole('heading', { name: /GPT-2/i, level: 1 })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /start summarizing/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /explore github/i })).toBeInTheDocument()
   })
 })
