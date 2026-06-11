@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+data/
+log/
+
+.env
+input.txt
