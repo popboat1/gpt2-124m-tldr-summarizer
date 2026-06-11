@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Settings, FileText, Zap } from 'lucide-react'
+import SettingsSidebar from '../components/SettingsSidebar'
 
 export default function Summarizer() {
   const [inputText, setInputText] = useState('')
   const [outputText, setOutputText] = useState('')
-  const [metrics, setMetrics] = useState({ tokensPerSec: 0, temp: 0.8 })
+  const [metrics, setMetrics] = useState({ tokensPerSec: 0 })
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [inferenceSettings, setInferenceSettings] = useState({ temp: 0.8, topK: 40 })
 
   return (
     <motion.div 
@@ -17,6 +20,7 @@ export default function Summarizer() {
         <h2 className="text-2xl font-light">New Summary</h2>
         <button 
           aria-label="Settings"
+          onClick={() => setIsSettingsOpen(true)}
           className="p-2 text-gray-400 hover:text-white transition-colors rounded-md hover:bg-gray-800"
         >
           <Settings size={20} />
@@ -60,9 +64,17 @@ export default function Summarizer() {
         </button>
         <div className="text-sm text-gray-500 flex gap-4">
           <span>{metrics.tokensPerSec.toFixed(1)} tokens/sec</span>
-          <span>Temp: {metrics.temp}</span>
+          <span>Temp: {inferenceSettings.temp}</span>
         </div>
       </div>
+
+      <SettingsSidebar 
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+        settings={inferenceSettings} 
+        onUpdate={setInferenceSettings} 
+      />
     </motion.div>
   )
 }
+
