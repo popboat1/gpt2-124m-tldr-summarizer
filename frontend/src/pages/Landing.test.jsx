@@ -3,16 +3,6 @@ import { describe, it, expect, vi, beforeAll } from 'vitest'
 import Landing from './Landing'
 import { BrowserRouter } from 'react-router-dom'
 
-beforeAll(() => {
-  class IntersectionObserverMock {
-    constructor() {}
-    disconnect() {}
-    observe() {}
-    takeRecords() { return [] }
-    unobserve() {}
-  }
-  vi.stubGlobal('IntersectionObserver', IntersectionObserverMock)
-})
 
 describe('Landing Page', () => {
   it('renders title and start button', () => {
