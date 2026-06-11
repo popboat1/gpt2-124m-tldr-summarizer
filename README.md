@@ -53,12 +53,14 @@ flowchart TD
 
 ## PPO Inference Results
 
-Here are a few examples of how the model summarizes posts after finishing the reinforcement learning phase. You can see the full test results, code, and evaluation metrics in the provided notebook.
+Here are a few examples of how the model summarizes posts after finishing the reinforcement learning phase. You can see the full test results, code, and evaluation metrics in the provided [notebook](notebook.ipynb).
 
+### Example 1
 **Post:** I have a roommate who keeps eating my food without asking. Every single time I buy groceries, half of it disappears within 48 hours. I tried talking to him politely but he just laughs it off and says he will replace it, but he never does. Should I get a mini-fridge for my room or confront him one last time more aggressively?
 
-**Summary:** I have a roommate who keeps eating my groceries without asking, and I don't want him to do it again. Should I confront him?
+**Summary:**  I have a roommate who keeps eating my groceries without asking, and I don't want him to do it again. Should I confront him?
 
+### Example 2
 **Post:** My boss asked me to work over the weekend for a major client launch, but it is completely short notice and I already booked non-refundable tickets to visit my parents. If I say no, I am worried it will impact my performance review next month, but if I go, I disappoint my family. How do I navigate this professionally?
 
 **Summary:** My boss asked me to work over the weekend for a major client launch, but I already booked non-refundable tickets to visit my parents. How do I navigate this professionally?
