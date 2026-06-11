@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+@theme {
+  /* Colors from DESIGN.md */
+  --color-surface: #fff8f5;
+  --color-ink: #211a15;
+  --color-outline: #857467;
+  --color-primary: #884e08;
+  --color-primary-hover: #a66622;
+  
+  /* Fonts */
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  
+  /* Custom Shadows */
+  --shadow-stroke: 0 2px 4px rgba(25, 25, 25, 0.05);
+}
