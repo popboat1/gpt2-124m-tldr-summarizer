@@ -1,0 +1,20 @@
+import { render, screen } from '@testing-library/react'
+import { describe, it, expect, vi } from 'vitest'
+import LossChart from './LossChart'
+
+// Mock recharts to avoid rendering SVG complexity in JSDOM
+vi.mock('recharts', () => ({
+  ResponsiveContainer: ({ children }) => <div data-testid="responsive-container">{children}</div>,
+  LineChart: ({ children }) => <div data-testid="line-chart">{children}</div>,
+  Line: () => <div data-testid="line" />,
+  XAxis: () => <div data-testid="xaxis" />,
+  YAxis: () => <div data-testid="yaxis" />,
+  Tooltip: () => <div data-testid="tooltip" />
+}))
+
+describe('LossChart', () => {
+  it('renders a loading state initially', () => {
+    render(<LossChart dataUrl="/logs/pretraining_log.txt" />)
+    expect(screen.getByText('Loading chart data...')).toBeInTheDocument()
+  })
+})

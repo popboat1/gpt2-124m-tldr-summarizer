@@ -1,0 +1,40 @@
+import React, { useState, useEffect } from 'react';
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip } from 'recharts';
+import { parseLogData } from '../utils/logParser';
+
+export default function LossChart({ dataUrl }) {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(dataUrl)
+      .then(res => res.text())
+      .then(text => {
+        // Sample data to prevent rendering 16k points (render every 50th point)
+        const parsed = parseLogData(text).filter((_, i) => i % 50 === 0);
+        setData(parsed);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, [dataUrl]);
+
+  if (loading) {
+    return <div className="w-full h-64 flex items-center justify-center text-on-surface-variant font-body-md">Loading chart data...</div>;
+  }
+
+  return (
+    <div className="w-full h-64 bg-surface-container-lowest p-sm rounded-DEFAULT border border-outline-variant">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={data}>
+          <XAxis dataKey="step" tick={{fontSize: 12}} stroke="#857467" />
+          <YAxis domain={['auto', 'auto']} tick={{fontSize: 12}} stroke="#857467" />
+          <Tooltip contentStyle={{backgroundColor: '#fff8f5', borderColor: '#d7c3b3', borderRadius: '4px'}} />
+          <Line type="monotone" dataKey="loss" stroke="#884e08" strokeWidth={2} dot={false} />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
