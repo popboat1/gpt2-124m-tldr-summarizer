@@ -25,10 +25,11 @@ export default function Summarizer() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="flex flex-col gap-2">
-          <label className="text-sm text-gray-500 font-medium flex items-center gap-2">
+          <label htmlFor="input-text" className="text-sm text-gray-500 font-medium flex items-center gap-2">
             <FileText size={16} /> Input Document
           </label>
           <textarea 
+            id="input-text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder="Enter text to summarize..."
@@ -37,12 +38,13 @@ export default function Summarizer() {
         </div>
         
         <div className="flex flex-col gap-2">
-          <label className="text-sm text-gray-500 font-medium flex items-center gap-2">
+          <label id="output-label" className="text-sm text-gray-500 font-medium flex items-center gap-2">
             <Zap size={16} /> Summary Output
           </label>
           <div 
+            role="region"
             tabIndex={0}
-            aria-label="Summary Output"
+            aria-labelledby="output-label"
             className="w-full h-80 bg-gray-900 border border-gray-800 rounded-xl p-4 text-gray-200 overflow-y-auto whitespace-pre-wrap"
           >
             {outputText || <span className="text-gray-600 italic">Summary will appear here...</span>}

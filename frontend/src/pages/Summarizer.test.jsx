@@ -10,7 +10,7 @@ describe('Summarizer Page', () => {
 
   it('renders input area, output area, and metrics', () => {
     render(<Summarizer />)
-    expect(screen.getByPlaceholderText(/Enter text to summarize/i)).toBeInTheDocument()
+    expect(screen.getByRole('textbox', { name: /input document/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Summarize/i })).toBeInTheDocument()
     expect(screen.getByText(/tokens\/sec/i)).toBeInTheDocument()
     expect(screen.getByText(/Summary will appear here.../i)).toBeInTheDocument()
@@ -21,7 +21,7 @@ describe('Summarizer Page', () => {
     const user = userEvent.setup()
     render(<Summarizer />)
     
-    const inputArea = screen.getByPlaceholderText(/Enter text to summarize/i)
+    const inputArea = screen.getByRole('textbox', { name: /input document/i })
     await user.type(inputArea, 'Hello world')
     
     expect(inputArea).toHaveValue('Hello world')
