@@ -101,4 +101,37 @@ describe('RedditFetcher Component', () => {
       expect(global.fetch).toHaveBeenCalledWith('https://reddit.com/r/test/comments/123/test.json?utm_source=share')
     })
   })
+
+  it('correctly resolves short links via allorigins proxy', async () => {
+    const mockOnFetch = vi.fn()
+    
+    // First fetch: the proxy returns HTML with a canonical link
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        contents: '<html><head><link rel="canonical" href="https://www.reddit.com/r/test/comments/12345/test_post/"></head><body></body></html>'
+      })
+    })
+
+    // Second fetch: actual post JSON
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => [{ data: { children: [{ data: { title: 'Short Link Title', selftext: 'Short Link Body' } }] } }]
+    })
+
+    const user = userEvent.setup()
+    render(<RedditFetcher onFetch={mockOnFetch} />)
+    
+    const input = screen.getByPlaceholderText(/Paste Reddit post URL.../i)
+    await user.type(input, 'https://www.reddit.com/r/ask/s/bkGdsmLFPL/')
+    
+    const button = screen.getByRole('button', { name: /Fetch from Reddit/i })
+    await user.click(button)
+    
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenNthCalledWith(1, `https://api.allorigins.win/get?url=${encodeURIComponent('https://www.reddit.com/r/ask/s/bkGdsmLFPL/')}`)
+      expect(global.fetch).toHaveBeenNthCalledWith(2, 'https://www.reddit.com/r/test/comments/12345/test_post.json')
+      expect(mockOnFetch).toHaveBeenCalledWith('Title: Short Link Title\n\nShort Link Body')
+    })
+  })
 })

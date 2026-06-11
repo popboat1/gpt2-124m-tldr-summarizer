@@ -26,6 +26,31 @@ export default function RedditFetcher({ onFetch }) {
         throw new Error('Please enter a valid Reddit URL')
       }
 
+      if (urlObj.pathname.includes('/s/')) {
+        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(urlObj.toString())}`
+        const proxyResponse = await fetch(proxyUrl)
+        if (!proxyResponse.ok) {
+          throw new Error('Failed to resolve Reddit shortlink')
+        }
+        const proxyJson = await proxyResponse.json()
+        const html = proxyJson.contents || ''
+        
+        const canonicalMatch = html.match(/<link rel="canonical" href="(.*?)"/)
+        const shredditMatch = html.match(/<shreddit-post id="(.*?)"/)
+        
+        let resolvedUrl = ''
+        if (canonicalMatch && canonicalMatch[1]) {
+          resolvedUrl = canonicalMatch[1]
+        } else if (shredditMatch && shredditMatch[1]) {
+          const postId = shredditMatch[1].replace('t3_', '')
+          resolvedUrl = `https://www.reddit.com/comments/${postId}`
+        } else {
+          throw new Error('Could not resolve shortlink destination')
+        }
+        
+        urlObj = new URL(resolvedUrl)
+      }
+
       if (!urlObj.pathname.endsWith('.json')) {
         if (urlObj.pathname.endsWith('/')) {
           urlObj.pathname = urlObj.pathname.slice(0, -1) + '.json'
