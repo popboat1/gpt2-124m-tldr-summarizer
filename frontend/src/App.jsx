@@ -1,9 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
-
-// Placeholders for now
-const Landing = () => <div>Landing Page</div>
-const Summarizer = () => <div>Summarizer Page</div>
+import Landing from './pages/Landing'
+import Summarizer from './pages/Summarizer'
 
 function App() {
   return (
