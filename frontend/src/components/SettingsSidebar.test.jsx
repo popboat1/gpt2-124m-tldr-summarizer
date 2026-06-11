@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi } from 'vitest'
 import SettingsSidebar from './SettingsSidebar'
@@ -20,5 +20,9 @@ describe('SettingsSidebar', () => {
     
     const tempInput = screen.getByRole('slider', { name: /Temperature/i })
     expect(tempInput).toBeInTheDocument()
+
+    fireEvent.change(tempInput, { target: { value: '0.9' } })
+    expect(onUpdate).toHaveBeenCalledWith({ temp: 0.9, topK: 40 })
   })
 })
+

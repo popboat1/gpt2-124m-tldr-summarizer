@@ -23,13 +23,16 @@ export default function SettingsSidebar({ isOpen, onClose, settings, onUpdate })
       )}
       
       <motion.div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="sidebar-title"
         className="fixed top-0 right-0 h-full w-80 bg-gray-900 border-l border-gray-800 z-50 p-6 flex flex-col shadow-xl"
         initial={{ x: '100%' }}
         animate={{ x: isOpen ? 0 : '100%' }}
         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
       >
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-xl font-semibold text-gray-100">Inference Settings</h2>
+          <h2 id="sidebar-title" className="text-xl font-semibold text-gray-100">Inference Settings</h2>
           <button 
             onClick={onClose}
             className="text-gray-400 hover:text-white transition-colors"
