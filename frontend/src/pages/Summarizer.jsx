@@ -15,7 +15,10 @@ export default function Summarizer() {
     >
       <header className="flex justify-between items-center pb-4 border-b border-gray-800">
         <h2 className="text-2xl font-light">New Summary</h2>
-        <button className="p-2 text-gray-400 hover:text-white transition-colors rounded-md hover:bg-gray-800">
+        <button 
+          aria-label="Settings"
+          className="p-2 text-gray-400 hover:text-white transition-colors rounded-md hover:bg-gray-800"
+        >
           <Settings size={20} />
         </button>
       </header>
@@ -37,7 +40,11 @@ export default function Summarizer() {
           <label className="text-sm text-gray-500 font-medium flex items-center gap-2">
             <Zap size={16} /> Summary Output
           </label>
-          <div className="w-full h-80 bg-gray-900 border border-gray-800 rounded-xl p-4 text-gray-200 overflow-y-auto whitespace-pre-wrap">
+          <div 
+            tabIndex={0}
+            aria-label="Summary Output"
+            className="w-full h-80 bg-gray-900 border border-gray-800 rounded-xl p-4 text-gray-200 overflow-y-auto whitespace-pre-wrap"
+          >
             {outputText || <span className="text-gray-600 italic">Summary will appear here...</span>}
           </div>
         </div>
