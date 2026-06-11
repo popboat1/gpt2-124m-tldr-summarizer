@@ -67,4 +67,38 @@ describe('RedditFetcher Component', () => {
       expect(mockOnFetch).toHaveBeenCalledWith('Title: Test Title\n\nTest body content')
     })
   })
+
+  it('shows error on non-Reddit URL', async () => {
+    const user = userEvent.setup()
+    render(<RedditFetcher onFetch={() => {}} />)
+    
+    const input = screen.getByPlaceholderText(/Paste Reddit post URL.../i)
+    await user.type(input, 'https://google.com')
+    
+    const button = screen.getByRole('button', { name: /Fetch from Reddit/i })
+    await user.click(button)
+    
+    expect(await screen.findByText(/Please enter a valid Reddit URL/i)).toBeInTheDocument()
+  })
+
+  it('correctly appends .json when URL has query parameters', async () => {
+    const mockOnFetch = vi.fn()
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => [{ data: { children: [{ data: { title: 'T', selftext: 'B' } }] } }]
+    })
+
+    const user = userEvent.setup()
+    render(<RedditFetcher onFetch={mockOnFetch} />)
+    
+    const input = screen.getByPlaceholderText(/Paste Reddit post URL.../i)
+    await user.type(input, 'https://reddit.com/r/test/comments/123/test/?utm_source=share')
+    
+    const button = screen.getByRole('button', { name: /Fetch from Reddit/i })
+    await user.click(button)
+    
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith('https://reddit.com/r/test/comments/123/test.json?utm_source=share')
+    })
+  })
 })

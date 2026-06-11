@@ -15,20 +15,25 @@ export default function RedditFetcher({ onFetch }) {
         throw new Error('Please enter a Reddit URL')
       }
       
+      let urlObj;
       try {
-        const urlObj = new URL(formattedUrl)
-        if (!urlObj.hostname.includes('reddit.com') && !urlObj.hostname.includes('redd.it')) {
-          throw new Error('Please enter a valid Reddit URL')
-        }
+        urlObj = new URL(formattedUrl)
       } catch (err) {
         throw new Error('Please enter a valid URL')
       }
 
-      // If the URL ends with a slash, remove it before appending .json
-      if (formattedUrl.endsWith('/')) {
-        formattedUrl = formattedUrl.slice(0, -1)
+      if (!urlObj.hostname.includes('reddit.com') && !urlObj.hostname.includes('redd.it')) {
+        throw new Error('Please enter a valid Reddit URL')
       }
-      const fetchUrl = formattedUrl.endsWith('.json') ? formattedUrl : `${formattedUrl}.json`
+
+      if (!urlObj.pathname.endsWith('.json')) {
+        if (urlObj.pathname.endsWith('/')) {
+          urlObj.pathname = urlObj.pathname.slice(0, -1) + '.json'
+        } else {
+          urlObj.pathname += '.json'
+        }
+      }
+      const fetchUrl = urlObj.toString()
       
       const response = await fetch(fetchUrl)
       if (!response.ok) {
