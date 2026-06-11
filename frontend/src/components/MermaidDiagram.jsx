@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import mermaid from 'mermaid';
 
 mermaid.initialize({
@@ -15,24 +15,35 @@ mermaid.initialize({
 });
 
 export default function MermaidDiagram({ chart }) {
-  const ref = useRef(null);
-
+  const [svgContent, setSvgContent] = useState('');
+  const [error, setError] = useState(false);
+  
   useEffect(() => {
-    if (ref.current) {
-      ref.current.removeAttribute('data-processed');
+    let isMounted = true;
+    const renderDiagram = async () => {
       try {
-        mermaid.run({ nodes: [ref.current] });
-      } catch (error) {
-        console.error('Failed to render Mermaid diagram:', error);
+        setError(false);
+        const { svg } = await mermaid.render(`mermaid-${Date.now()}`, chart);
+        if (isMounted) setSvgContent(svg);
+      } catch (err) {
+        console.error(err);
+        if (isMounted) setError(true);
       }
-    }
+    };
+    renderDiagram();
+    return () => { isMounted = false; };
   }, [chart]);
+
+  if (error) {
+    return <div className="p-md bg-surface-container-lowest">Failed to render diagram</div>;
+  }
 
   return (
     <div className="flex justify-center p-md bg-surface-container-lowest rounded-DEFAULT border border-outline-variant">
-      <div ref={ref} className="mermaid text-on-surface-variant font-body-md">
-        {chart}
-      </div>
+      <div 
+        className="mermaid text-on-surface-variant font-body-md" 
+        dangerouslySetInnerHTML={{ __html: svgContent }} 
+      />
     </div>
   );
 }

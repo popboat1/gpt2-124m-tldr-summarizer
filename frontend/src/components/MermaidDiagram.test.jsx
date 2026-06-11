@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import MermaidDiagram from './MermaidDiagram'
 
@@ -6,13 +6,16 @@ import MermaidDiagram from './MermaidDiagram'
 vi.mock('mermaid', () => ({
   default: {
     initialize: vi.fn(),
-    run: vi.fn()
+    render: vi.fn().mockResolvedValue({ svg: '<svg data-testid="mock-svg">Mocked Diagram</svg>' })
   }
 }))
 
 describe('MermaidDiagram', () => {
-  it('renders the chart definition inside a mermaid div', () => {
+  it('renders the mocked svg diagram', async () => {
     render(<MermaidDiagram chart="graph TD; A-->B;" />)
-    expect(screen.getByText('graph TD; A-->B;')).toBeInTheDocument()
+    
+    await waitFor(() => {
+      expect(screen.getByTestId('mock-svg')).toBeInTheDocument()
+    })
   })
 })
