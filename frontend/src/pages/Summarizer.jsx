@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Settings, FileText, Zap } from 'lucide-react'
 import SettingsSidebar from '../components/SettingsSidebar'
+import RedditFetcher from '../components/RedditFetcher'
 
 export default function Summarizer() {
   const [inputText, setInputText] = useState('')
@@ -29,6 +30,7 @@ export default function Summarizer() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="flex flex-col gap-2">
+          <RedditFetcher onFetch={(text) => setInputText(text)} />
           <label htmlFor="input-text" className="text-sm text-gray-500 font-medium flex items-center gap-2">
             <FileText size={16} /> Input Document
           </label>
