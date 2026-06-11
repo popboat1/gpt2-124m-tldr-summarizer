@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
 @theme {
   --color-on-secondary-fixed: #1c1b1b;
   --color-surface-container-highest: #ede0d7;
