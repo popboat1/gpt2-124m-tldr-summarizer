@@ -42,7 +42,7 @@ graph TD;
           transition={{ duration: 0.8, delay: 0.2 }}
           className="font-body-lg text-body-lg text-on-surface-variant max-w-[680px]"
         >
-          A 124M parameter model fine-tuned on the openai_summarizer_tldr dataset. Minimalist, fast, and local. Pushing small parameter models beyond supervised fine-tuning limits using Proximal Policy Optimization.
+          A 124M parameter model fine-tuned on the openai summarizer tldr dataset. Minimalist, light, and fast. Pushing small parameter models beyond supervised fine-tuning limits using Proximal Policy Optimization.
         </motion.p>
 
         <motion.div 
@@ -183,7 +183,7 @@ graph TD;
                 <div className="font-mono-label text-mono-label text-on-surface-variant">Metric</div>
                 <div className="font-body-md text-body-md font-medium">Winrate vs SFT Baseline</div>
               </div>
-              <div className="font-mono-metric text-mono-metric text-primary">52<span className="text-sm text-outline">%</span></div>
+              <div className="font-mono-metric text-mono-metric text-primary">52%<span className="text-sm text-outline"></span></div>
             </div>
             <div className="h-2 w-full bg-surface-variant rounded-full overflow-hidden">
               <motion.div 
@@ -191,7 +191,7 @@ graph TD;
                 whileInView={{ width: "52%" }}
                 viewport={{ once: true }}
                 transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
-                className="h-full bg-[#191919]"
+                className="h-full bg-primary"
               />
             </div>
           </motion.div>

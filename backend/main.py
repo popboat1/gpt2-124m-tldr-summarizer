@@ -1,12 +1,24 @@
 import os
+import json
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-from src.inference import generate_text
+from src.inference import generate_text_stream
 import requests
+from fastapi.middleware.cors import CORSMiddleware
 import random
+from huggingface_hub import hf_hub_download
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # define what the frontend will send us
 class GenerateRequest(BaseModel):
@@ -14,35 +26,49 @@ class GenerateRequest(BaseModel):
     model: str = "PPO Aligned"
     temperature: float = 0.7
     top_k: int = 40
+    num_probs: int = 5
 
 @app.post("/api/generate")
 def generate(req: GenerateRequest):
-    prompt = f"post: {req.text}\n\ntl;dr: "
+    print(f"Incoming request -> Model: {req.model} | Temp: {req.temperature} | Top K: {req.top_k} | Probs: {req.num_probs} | Text length: {len(req.text)}")
+    prompt = f"Post: {req.text}\n\nTL;DR: "
+    
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     
     if req.model == "SFT Baseline":
-        model_path = "models/model_best.pt"
+        model_filename = "best_sft.pt"
         max_tokens = 64
         rep_pen = 1.0
     else:
-        model_path = "models/ppo_latest.pt"
+        model_filename = "ppo_latest.pt"
         max_tokens = 128
         rep_pen = 1.3
         
-    out_text, out_time, out_tps = generate_text(
-        prompt=prompt, 
-        model_path=model_path, 
-        max_new_tokens=max_tokens, 
-        temperature=req.temperature,
-        top_k=req.top_k,
-        repetition_penalty=rep_pen,
-        stop_on_eot=True
-    )
+    try:
+        # Dynamically download the model from the Hugging Face Model Hub
+        model_path = hf_hub_download(repo_id="popboat1/gpt2-summarizer-models", filename=model_filename)
+    except Exception as e:
+        print(f"Failed to download from HF Hub: {e}")
+        # Fallback to local paths if running locally without internet
+        if req.model == "SFT Baseline":
+            model_path = os.path.join(base_dir, "log", "sft", "best_sft.pt")
+        else:
+            model_path = os.path.join(base_dir, "log", "ppo", "ppo_latest.pt")
+        
+    def event_stream():
+        for chunk in generate_text_stream(
+            prompt=prompt, 
+            model_path=model_path, 
+            max_new_tokens=max_tokens, 
+            temperature=req.temperature,
+            top_k=req.top_k,
+            repetition_penalty=rep_pen,
+            stop_on_eot=True,
+            num_probs=req.num_probs
+        ):
+            yield f"data: {json.dumps(chunk)}\n\n"
 
-    return {
-        "text": out_text, 
-        "time": out_time, 
-        "tps": out_tps
-    }
+    return StreamingResponse(event_stream(), media_type="text/event-stream")
 
 @app.get("/api/reddit/{subreddit}")
 def get_reddit_post(subreddit: str):

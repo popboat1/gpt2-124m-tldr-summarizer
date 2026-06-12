@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, ReferenceLine } from 'recharts';
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip } from 'recharts';
 import { parseLogData } from '../utils/logParser';
 
 export default function HellaChart({ dataUrl }) {
@@ -30,10 +30,8 @@ export default function HellaChart({ dataUrl }) {
         <LineChart data={data}>
           <XAxis dataKey="step" type="number" domain={['dataMin', 'dataMax']} tick={{fontSize: 12}} stroke="#857467" />
           <YAxis domain={['auto', 'auto']} tick={{fontSize: 12}} stroke="#857467" />
-          <Tooltip contentStyle={{backgroundColor: '#fff8f5', borderColor: '#d7c3b3', borderRadius: '4px'}} />
+          <Tooltip contentStyle={{backgroundColor: 'var(--color-surface-container-lowest)', borderColor: 'var(--color-outline-variant)', borderRadius: '4px', color: 'var(--color-on-surface)'}} />
           <Line type="monotone" dataKey="hella_acc" stroke="#ffb876" strokeWidth={2} dot={true} />
-          <ReferenceLine y={0.294463} label="GPT-2 Hella (29.4%)" stroke="#857467" strokeDasharray="3 3" />
-          <ReferenceLine y={0.337} label="GPT-3 Hella (33.7%)" stroke="#857467" strokeDasharray="3 3" />
         </LineChart>
       </ResponsiveContainer>
     </div>

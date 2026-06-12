@@ -27,7 +27,7 @@ def test_generate_endpoint():
         assert "post: Test input" in kwargs["prompt"]
         assert kwargs["temperature"] == 0.5
         assert kwargs["top_k"] == 40
-        assert kwargs["model_path"] == "models/ppo_latest.pt"
+        assert kwargs["model_path"].endswith("ppo_latest.pt")
         assert kwargs["repetition_penalty"] == 1.3
         assert kwargs["max_new_tokens"] == 128
 
@@ -43,7 +43,7 @@ def test_generate_endpoint():
         
         mock_gen_sft.assert_called_once()
         kwargs = mock_gen_sft.call_args[1]
-        assert kwargs["model_path"] == "models/model_best.pt"
+        assert kwargs["model_path"].endswith("best_sft.pt")
         assert kwargs["repetition_penalty"] == 1.0
         assert kwargs["max_new_tokens"] == 64
 

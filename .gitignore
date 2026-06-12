@@ -5,7 +5,11 @@ __pycache__/
 .pytest_cache/
 
 data/
-log/
+log/*
 
 .env
 input.txt
+
+.superpowers/
+docs/
+docs/superpowers/specs/
