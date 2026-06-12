@@ -141,7 +141,7 @@ export default function Summarizer() {
                 className="w-full h-32 bg-transparent text-body-lg text-on-surface resize-none focus:outline-none placeholder:text-on-surface-variant font-body-lg" 
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                placeholder="How can I help you today?"
+                placeholder="Start typing or paste in a reddit post to summarize"
               />
               
               <div className="flex justify-end items-center w-full mt-2">

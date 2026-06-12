@@ -42,7 +42,7 @@ graph TD;
           transition={{ duration: 0.8, delay: 0.2 }}
           className="font-body-lg text-body-lg text-on-surface-variant max-w-[680px]"
         >
-          A 124M parameter model fine-tuned on the openai summarizer tldr dataset. Minimalist, light, and fast. Pushing small parameter models beyond supervised fine-tuning limits using Proximal Policy Optimization.
+          A 124M parameter model fine-tuned on the openai summarizer tldr dataset. Pushing small parameter models beyond supervised fine-tuning limits using Proximal Policy Optimization.
         </motion.p>
 
         <motion.div 
