@@ -11,9 +11,37 @@ export default function Summarizer() {
   
   const [selectedModel, setSelectedModel] = useState('PPO Aligned')
 
-  const handleGenerate = () => {
-    setOutputText('Summary will appear here...')
-    setMetrics({ tokensPerSec: 64.2 })
+  const [isGenerating, setIsGenerating] = useState(false)
+
+  const handleGenerate = async () => {
+    if (!inputText.trim()) return;
+    setIsGenerating(true)
+    setOutputText('Generating summary...')
+    
+    try {
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: inputText,
+          model: selectedModel,
+          temperature: inferenceSettings.temp,
+          top_k: inferenceSettings.topK
+        })
+      })
+      
+      const data = await response.json()
+      if (response.ok) {
+        setOutputText(data.text)
+        setMetrics({ tokensPerSec: data.tps, time: data.time })
+      } else {
+        setOutputText('Error generating summary.')
+      }
+    } catch (e) {
+      setOutputText('Failed to connect to backend.')
+    } finally {
+      setIsGenerating(false)
+    }
   }
 
   return (

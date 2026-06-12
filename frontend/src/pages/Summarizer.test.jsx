@@ -46,4 +46,27 @@ describe('Summarizer Page', () => {
     const inputArea = screen.getByRole('textbox', { name: /input document/i })
     expect(inputArea).toHaveValue('Fetched Reddit Post')
   })
+
+  it('calls generate API and updates output', async () => {
+    global.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ text: 'Generated Summary', time: 1.5, tps: 20.0 }),
+      })
+    )
+    
+    const user = userEvent.setup()
+    render(<Summarizer />)
+
+    const inputArea = screen.getByRole('textbox', { name: /input document/i })
+    await user.type(inputArea, 'Some text')
+    
+    const summarizeButton = screen.getByRole('button', { name: /Summarize/i })
+    await user.click(summarizeButton)
+    
+    expect(global.fetch).toHaveBeenCalledWith('/api/generate', expect.any(Object))
+    
+    expect(await screen.findByText('Generated Summary')).toBeInTheDocument()
+    expect(await screen.findByText(/20.0 t\/s/i)).toBeInTheDocument()
+  })
 })
