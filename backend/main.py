@@ -100,5 +100,13 @@ def get_reddit_post(subreddit: str):
     except Exception as e:
         return {"error": str(e), "text": ""}
 
-# mount the react build folder so fastapi serves the ui
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
+# Mount the react build folder if it exists (local monolithic development)
+static_path = os.path.join(backend_dir, "static")
+if os.path.exists("static"):
+    app.mount("/", StaticFiles(directory="static", html=True), name="static")
+elif os.path.exists(static_path):
+    app.mount("/", StaticFiles(directory=static_path, html=True), name="static")
+else:
+    @app.get("/")
+    def read_root():
+        return {"status": "online", "message": "API is running. Frontend is hosted separately."}
