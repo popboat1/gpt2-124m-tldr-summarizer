@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip } from 'recharts';
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, ReferenceLine } from 'recharts';
 import { parseLogData } from '../utils/logParser';
 
 export default function LossChart({ dataUrl }) {
@@ -29,10 +29,13 @@ export default function LossChart({ dataUrl }) {
     <div className="w-full h-64 bg-surface-container-lowest p-sm rounded-DEFAULT border border-outline-variant">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data}>
-          <XAxis dataKey="step" tick={{fontSize: 12}} stroke="#857467" />
+          <XAxis dataKey="step" type="number" domain={['dataMin', 'dataMax']} tick={{fontSize: 12}} stroke="#857467" />
           <YAxis domain={['auto', 'auto']} tick={{fontSize: 12}} stroke="#857467" />
           <Tooltip contentStyle={{backgroundColor: '#fff8f5', borderColor: '#d7c3b3', borderRadius: '4px'}} />
           <Line type="monotone" dataKey="loss" stroke="#884e08" strokeWidth={2} dot={false} />
+          <Line type="monotone" dataKey="val_loss" stroke="#ffb876" strokeWidth={2} dot={false} />
+          <ReferenceLine y={3.2924} label="GPT-2 124M Loss" stroke="#857467" strokeDasharray="3 3" />
+          <ReferenceLine y={3.0048} label="Best Loss (3.0048)" stroke="#4ade80" strokeDasharray="3 3" />
         </LineChart>
       </ResponsiveContainer>
     </div>

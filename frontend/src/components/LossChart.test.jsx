@@ -9,7 +9,8 @@ vi.mock('recharts', () => ({
   Line: () => <div data-testid="line" />,
   XAxis: () => <div data-testid="xaxis" />,
   YAxis: () => <div data-testid="yaxis" />,
-  Tooltip: () => <div data-testid="tooltip" />
+  Tooltip: () => <div data-testid="tooltip" />,
+  ReferenceLine: () => <div data-testid="reference-line" />
 }))
 
 describe('LossChart', () => {
