@@ -64,8 +64,13 @@ def generate(model, prompts, gen_len, temperature=0.7, top_k=40):
     model.eval()
     with torch.no_grad():
         gen_seqs = prompts
+        past_key_values = None
         for _ in range(gen_len):
-            logits, _ = model(gen_seqs)
+            if past_key_values is not None:
+                idx_cond = gen_seqs[:, -1:]
+            else:
+                idx_cond = gen_seqs
+            logits, _, past_key_values = model(idx_cond, past_key_values=past_key_values, use_cache=True)
             next_token_logits = logits[:, -1, :] / temperature
             next_token = torch.argmax(next_token_logits, dim=-1, keepdim=True)
             gen_seqs = torch.cat((gen_seqs, next_token), dim=1)

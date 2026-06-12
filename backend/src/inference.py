@@ -53,14 +53,19 @@ def generate_text_stream(prompt, model_path, max_new_tokens=50, temperature=0.5,
     t0 = time.perf_counter()
     
     generated_text_so_far = ""
+    past_key_values = None
     
     # start the autoregressive decoding loop
     with torch.no_grad():
         with torch.autocast(device_type="cuda" if "cuda" in device else "cpu", dtype=torch.float16):
             for i in range(max_new_tokens):
                 # crop context to max block size if we exceed the physical attention window
-                idx_cond = idx[:, -config.block_size:]
-                logits, _ = model(idx_cond)
+                if past_key_values is not None:
+                    idx_cond = idx[:, -1:]
+                else:
+                    idx_cond = idx[:, -config.block_size:]
+                    
+                logits, _, past_key_values = model(idx_cond, past_key_values=past_key_values, use_cache=True)
                 
                 # isolate the raw activations at the final time step
                 next_token_logits = logits[:, -1, :]
