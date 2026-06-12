@@ -33,7 +33,19 @@ export default function Summarizer() {
           
           <div className="flex flex-col gap-unit">
             {['r/relationships', 'r/tifu', 'r/running', 'r/AskReddit'].map((sub, i) => (
-              <button key={sub} className={`text-left px-sm py-sm rounded border transition-colors cursor-pointer ${i === 0 ? 'bg-surface-container-low border-outline-variant text-primary font-bold' : 'hover:bg-surface-container-lowest border-transparent hover:border-outline-variant text-on-surface-variant'}`}>
+              <button 
+                key={sub} 
+                onClick={async () => {
+                  try {
+                    const res = await fetch(`/api/reddit/${sub.replace('r/', '')}`)
+                    const data = await res.json()
+                    if (data.text) setInputText(data.text)
+                  } catch (e) {
+                    console.error(e)
+                  }
+                }}
+                className={`text-left px-sm py-sm rounded border transition-colors cursor-pointer ${i === 0 ? 'bg-surface-container-low border-outline-variant text-primary font-bold' : 'hover:bg-surface-container-lowest border-transparent hover:border-outline-variant text-on-surface-variant'}`}
+              >
                 <span className="font-mono-label text-mono-label">{sub}</span>
               </button>
             ))}
@@ -96,13 +108,13 @@ export default function Summarizer() {
                 <div className="flex bg-surface-container-low rounded-lg p-1 border border-outline-variant">
                   <button 
                     onClick={() => setSelectedModel('PPO Aligned')}
-                    className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer ${selectedModel === 'PPO Aligned' ? 'bg-surface-bright shadow-sm text-primary border border-outline-variant' : 'text-on-surface-variant hover:text-on-surface'}`}
+                    className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer ${selectedModel === 'PPO Aligned' ? 'bg-primary shadow-sm text-on-primary border-transparent' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high'}`}
                   >
                     PPO Aligned
                   </button>
                   <button 
                     onClick={() => setSelectedModel('SFT Baseline')}
-                    className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer ${selectedModel === 'SFT Baseline' ? 'bg-surface-bright shadow-sm text-primary border border-outline-variant' : 'text-on-surface-variant hover:text-on-surface'}`}
+                    className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer ${selectedModel === 'SFT Baseline' ? 'bg-primary shadow-sm text-on-primary border-transparent' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high'}`}
                   >
                     SFT Baseline
                   </button>
@@ -145,35 +157,32 @@ export default function Summarizer() {
                 aria-label="Summary Output"
                 className="p-md flex-grow overflow-y-auto font-body-md text-body-md text-on-surface leading-relaxed whitespace-pre-wrap"
               >
-                {outputText || <span className="text-gray-500 italic">Summary will appear here...</span>}
+                {outputText || <span className="text-on-surface-variant italic">Summary will appear here...</span>}
+              </div>
+
+              {/* Inline Metrics Dashboard */}
+              <div className="bg-surface-container-low border-t border-outline-variant py-sm px-md flex flex-wrap justify-between items-center text-[12px] font-mono-metric">
+                <div className="flex items-center gap-2">
+                  <span className="uppercase tracking-wider opacity-70">Velocity:</span>
+                  <span className="text-primary font-medium">{metrics.tokensPerSec ? `${metrics.tokensPerSec.toFixed(1)} t/s` : '0.0 t/s'}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="uppercase tracking-wider opacity-70">Time:</span>
+                  <span className="font-medium">1.42s</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="uppercase tracking-wider opacity-70">Length:</span>
+                  <span className="font-medium">128</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="uppercase tracking-wider opacity-70">Drift:</span>
+                  <span className="text-tertiary font-medium">0.045 KL</span>
+                </div>
               </div>
             </div>
           </section>
         </div>
       </motion.div>
-
-      {/* Bottom Dashboard (Metrics) */}
-      <footer className="w-[100vw] relative left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface border-t border-outline py-sm px-lg mt-auto font-mono-metric text-mono-metric z-50 flex-shrink-0">
-        <div className="max-w-container-max mx-auto flex flex-wrap justify-between items-center text-[13px] gap-md">
-          <div className="flex flex-col">
-            <span className="text-[10px] text-secondary-fixed-dim uppercase tracking-widest opacity-70">Inference Velocity</span>
-            <span className="text-primary-fixed-dim">{metrics.tokensPerSec ? `${metrics.tokensPerSec.toFixed(1)} tokens/sec` : '0.0 tokens/sec'}</span>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-[10px] text-secondary-fixed-dim uppercase tracking-widest opacity-70">Total Delta Time</span>
-            <span>1,420 ms</span>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-[10px] text-secondary-fixed-dim uppercase tracking-widest opacity-70">Sequence Length</span>
-            <span>128 tokens</span>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-[10px] text-secondary-fixed-dim uppercase tracking-widest opacity-70">Policy Drift</span>
-            <span className="text-tertiary-fixed-dim">0.045 KL</span>
-          </div>
-        </div>
-      </footer>
-
     </>
   )
 }
