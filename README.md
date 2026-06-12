@@ -4,6 +4,16 @@ This project is a complete pipeline for training a GPT-2 (124M) model from the g
 
 I trained this entire model on Kaggle using their dual T4 GPU environment, working around their 30 hours per week compute limit.
 
+Note that the model used for summarizing is quite small (124M parameters), which comes with several inherent limitations: it has a short context window (1,024 tokens), limited deep reasoning capacity, and may occasionally drop nuance or struggle with highly complex logic compared to modern 7B+ parameter models. It is also more prone to hallucination if asked to summarize text that relies heavily on outside context.
+
+### Pretraining Hyperparameters
+* **Architecture**: GPT-2 Small (124M parameters), Vocab size: 50,304
+* **Context Length**: 1,024 tokens
+* **Batch Size**: 524,288 tokens per step
+* **Optimizer**: AdamW (Max LR: `6e-4`, Min LR: `6e-5`, Weight Decay: `0.1`)
+* **Schedule**: Linear warmup (715 steps) followed by cosine decay (19,073 total steps)
+* **Precision**: Mixed precision (`float16` autocast) with TF32
+
 ## Live Demo & Resources
 
 - **Web Application**: [https://gpt2-124m-tldr-summarizer.vercel.app](https://gpt2-124m-tldr-summarizer.vercel.app)
