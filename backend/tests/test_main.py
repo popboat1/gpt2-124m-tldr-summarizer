@@ -46,3 +46,19 @@ def test_generate_endpoint():
         assert kwargs["model_path"] == "models/model_best.pt"
         assert kwargs["repetition_penalty"] == 1.0
         assert kwargs["max_new_tokens"] == 64
+
+def test_reddit_bucket():
+    with patch("main.requests.get") as mock_get:
+        mock_response = mock_get.return_value
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            "data": {
+                "children": [
+                    {"data": {"title": "Test Title", "selftext": "Test body text that is reasonably long enough. This makes it over 50 characters.", "stickied": False}}
+                ]
+            }
+        }
+        
+        response = client.get("/api/reddit/tifu")
+        assert response.status_code == 200
+        assert "Test Title" in response.json()["text"]
