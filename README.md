@@ -4,6 +4,12 @@ This project is a complete pipeline for training a GPT-2 (124M) model from the g
 
 I trained this entire model on Kaggle using their dual T4 GPU environment, working around their 30 hours per week compute limit.
 
+## 🌐 Live Demo & Resources
+
+- **Web Application**: [https://gpt2-124m-tldr-summarizer.vercel.app](https://gpt2-124m-tldr-summarizer.vercel.app)
+- **Model Weights & Card**: [Hugging Face Models (popboat1/gpt2-summarizer-models)](https://huggingface.co/popboat1/gpt2-summarizer-models)
+- **Inference API Space**: [Hugging Face API (popboat1/gpt2-summarizer-api)](https://huggingface.co/spaces/popboat1/gpt2-summarizer-api)
+
 ## Pretraining
 
 I started by training the raw base model to understand text using the [FineWeb-Edu dataset](https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu). The model ran for 19,703 steps, which covers about 10 billion tokens (one full pass over the dataset), and hit its lowest validation loss at 3.0048. To make sure the model actually learned basic language reasoning and did not just memorize data, I tested it using the HellaSwag benchmark, where it scored 28.95% accuracy. It is worth noting that if the model is trained longer for about 4 epochs, it can achieve approximately 33% accuracy on HellaSwag.
