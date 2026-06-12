@@ -101,6 +101,7 @@ def get_reddit_post(subreddit: str):
         return {"error": str(e), "text": ""}
 
 # Mount the react build folder if it exists (local monolithic development)
+backend_dir = os.path.dirname(os.path.abspath(__file__))
 static_path = os.path.join(backend_dir, "static")
 if os.path.exists("static"):
     app.mount("/", StaticFiles(directory="static", html=True), name="static")
