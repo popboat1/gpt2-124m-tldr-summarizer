@@ -103,7 +103,7 @@ export default function RedditFetcher({ onFetch }) {
         <button
           onClick={handleFetch}
           disabled={isLoading || !url.trim()}
-          className="px-4 py-2 bg-gray-800 text-gray-200 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition-colors whitespace-nowrap"
+          className="px-4 py-2 bg-gray-800 text-gray-200 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition-colors whitespace-nowrap cursor-pointer"
         >
           {isLoading ? 'Fetching...' : 'Fetch from Reddit'}
         </button>

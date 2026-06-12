@@ -48,7 +48,7 @@ graph TD;
           transition={{ duration: 0.8, delay: 0.3 }}
           className="mt-8 flex gap-md"
         >
-          <Link to="/summarizer" className="bg-[#191919] text-[#FBF9F6] px-xl py-md font-body-md text-body-md rounded-DEFAULT hover:bg-[#333333] transition-colors cursor-pointer">
+          <Link to="/summarizer" className="bg-inverse-surface text-inverse-on-surface px-xl py-md font-body-md text-body-md rounded-DEFAULT hover:opacity-80 transition-opacity cursor-pointer border border-inverse-surface">
             Start Summarizing
           </Link>
           <a href="https://github.com/popboat1/gpt2-124m-tldr-summarizer" target="_blank" rel="noreferrer" className="bg-transparent text-on-background border border-outline px-xl py-md font-body-md text-body-md rounded-DEFAULT hover:bg-on-background hover:text-background transition-colors cursor-pointer">

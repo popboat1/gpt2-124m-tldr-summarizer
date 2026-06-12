@@ -69,6 +69,22 @@
   --font-headline-lg-mobile: 'Inter', sans-serif;
 }
 
+.dark {
+  --color-background: #121212;
+  --color-on-background: #FBF9F6;
+  --color-surface: #1e1e1e;
+  --color-on-surface: #E0E0E0;
+  --color-surface-container-lowest: #121212;
+  --color-surface-container-low: #1e1e1e;
+  --color-surface-variant: #2a2a2a;
+  --color-on-surface-variant: #b0b0b0;
+  --color-outline: #555555;
+  --color-outline-variant: #333333;
+  --color-primary: #ffb876;
+  --color-inverse-surface: #e0e0e0;
+  --color-inverse-on-surface: #121212;
+}
+
 @utility text-body-md {
   font-size: 14px;
   line-height: 22px;
