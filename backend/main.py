@@ -49,16 +49,22 @@ def generate(req: GenerateRequest):
         max_tokens = 128
         rep_pen = 1.3
         
-    try:
-        # Dynamically download the model from the Hugging Face Model Hub
-        model_path = hf_hub_download(repo_id="popboat1/gpt2-summarizer-models", filename=model_filename)
-    except Exception as e:
-        print(f"Failed to download from HF Hub: {e}")
-        # Fallback to local paths if running locally without internet
-        if req.model == "SFT Baseline":
-            model_path = os.path.join(base_dir, "log", "sft", "best_sft.pt")
-        else:
-            model_path = os.path.join(base_dir, "log", "ppo", "ppo_latest.pt")
+    if req.model == "SFT Baseline":
+        local_path = os.path.join(base_dir, "log", "sft", "best_sft.pt")
+    else:
+        local_path = os.path.join(base_dir, "log", "ppo", "ppo_latest.pt")
+        
+    if os.path.exists(local_path):
+        model_path = local_path
+        print(f"Using local model at: {model_path}")
+    else:
+        try:
+            # Dynamically download the model from the Hugging Face Model Hub
+            model_path = hf_hub_download(repo_id="popboat1/gpt2-summarizer-models", filename=model_filename)
+        except Exception as e:
+            print(f"Failed to download from HF Hub: {e}")
+            # Fallback to local path which will throw a clearer error downstream
+            model_path = local_path
         
     def event_stream():
         for chunk in generate_text_stream(
