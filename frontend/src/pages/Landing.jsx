@@ -1,6 +1,9 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import LossChart from '../components/LossChart'
+import HellaChart from '../components/HellaChart'
+import SFTLossChart from '../components/SFTLossChart'
+import RougeChart from '../components/RougeChart'
 import MermaidDiagram from '../components/MermaidDiagram'
 
 export default function Landing() {
@@ -57,7 +60,7 @@ graph TD;
         </motion.div>
       </section>
 
-      {/* Feature A: Pretraining & SFT */}
+      {/* Feature A: Pretraining */}
       <section className="py-24 grid md:grid-cols-2 gap-xl items-center border-b border-outline-variant overflow-hidden">
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
@@ -67,12 +70,9 @@ graph TD;
           className="flex flex-col gap-md"
         >
           <div className="font-mono-label text-mono-label text-primary uppercase tracking-widest">Section 01</div>
-          <h2 className="font-headline-md text-headline-md">Pretraining & SFT</h2>
+          <h2 className="font-headline-md text-headline-md">Pretraining</h2>
           <p className="font-body-md text-body-md text-on-surface-variant max-w-[400px]">
               Trained on Kaggle's dual T4 GPU environment, the base model learned language representations from the FineWeb-Edu dataset (10 billion tokens). It reached a validation loss of 3.0048 and a HellaSwag accuracy of 28.95%.
-          </p>
-          <p className="font-body-md text-body-md text-on-surface-variant max-w-[400px]">
-              We then fine-tuned the model on the OpenAI Summarize TL;DR dataset, bringing the validation loss down to 2.5321 and drastically improving ROUGE scores.
           </p>
         </motion.div>
         <motion.div 
@@ -82,14 +82,47 @@ graph TD;
           transition={{ duration: 0.8, delay: 0.2 }}
           className="flex flex-col gap-4"
         >
-          <div className="w-full h-full min-h-[300px]">
+          <div className="w-full h-full min-h-[250px]">
             <LossChart dataUrl="/logs/pretraining_log.txt" />
           </div>
-          <img src="/plots/sft_loss.png" alt="SFT Loss" className="w-full rounded-DEFAULT border border-outline-variant shadow-stroke" />
+          <div className="w-full h-full min-h-[250px]">
+            <HellaChart dataUrl="/logs/pretraining_log.txt" />
+          </div>
         </motion.div>
       </section>
 
-      {/* Feature B: The Alignment Solution: PPO */}
+      {/* Feature B: Supervised Fine Tuning */}
+      <section className="py-24 grid md:grid-cols-2 gap-xl items-center border-b border-outline-variant overflow-hidden">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-10%" }}
+          transition={{ duration: 0.8 }}
+          className="flex flex-col gap-md"
+        >
+          <div className="font-mono-label text-mono-label text-primary uppercase tracking-widest">Section 02</div>
+          <h2 className="font-headline-md text-headline-md">Supervised Fine Tuning</h2>
+          <p className="font-body-md text-body-md text-on-surface-variant max-w-[400px]">
+              We then fine-tuned the model on the OpenAI Summarize TL;DR dataset, bringing the validation loss down to 2.5321 and drastically improving ROUGE scores.
+          </p>
+        </motion.div>
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-10%" }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="flex flex-col gap-4 w-full"
+        >
+          <div className="w-full h-full min-h-[250px]">
+            <SFTLossChart />
+          </div>
+          <div className="w-full h-full min-h-[250px]">
+            <RougeChart />
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Feature C: The Alignment Solution: PPO */}
       <section className="py-24 border-b border-outline-variant">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -98,7 +131,7 @@ graph TD;
           transition={{ duration: 0.8 }}
           className="text-center mb-xl"
         >
-          <div className="font-mono-label text-mono-label text-primary uppercase tracking-widest mb-xs">Section 02</div>
+          <div className="font-mono-label text-mono-label text-primary uppercase tracking-widest mb-xs">Section 03</div>
           <h2 className="font-headline-md text-headline-md">The Alignment Solution: PPO</h2>
         </motion.div>
         <motion.div 
@@ -120,7 +153,7 @@ graph TD;
         </motion.div>
       </section>
 
-      {/* Feature C: The Evaluation Paradigm */}
+      {/* Feature D: The Evaluation Paradigm */}
       <section className="py-24">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -129,7 +162,7 @@ graph TD;
           transition={{ duration: 0.8 }}
           className="mb-xl text-center"
         >
-          <div className="font-mono-label text-mono-label text-primary uppercase tracking-widest mb-xs">Section 03</div>
+          <div className="font-mono-label text-mono-label text-primary uppercase tracking-widest mb-xs">Section 04</div>
           <h2 className="font-headline-md text-headline-md">The Evaluation Paradigm</h2>
           <p className="font-body-md text-body-md text-on-surface-variant max-w-[600px] mx-auto mt-sm">
               We utilize an "LLM-as-a-Judge" framework via openrouter using gpt-oss-120B. Our PPO aligned model achieved a significant winrate when compared against the baseline SFT model.

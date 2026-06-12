@@ -1,0 +1,17 @@
+{
+    "pretrained_model": {
+        "rouge-1": 0.0526,
+        "rouge-2": 0.0077,
+        "rouge-l": 0.0456
+    },
+    "best_model": {
+        "rouge-1": 0.3239,
+        "rouge-2": 0.1141,
+        "rouge-l": 0.252
+    },
+    "latest_model": {
+        "rouge-1": 0.3197,
+        "rouge-2": 0.1153,
+        "rouge-l": 0.25
+    }
+}

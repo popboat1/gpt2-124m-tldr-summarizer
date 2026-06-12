@@ -2,7 +2,14 @@ import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 
 export default function Layout({ children }) {
-  const [darkMode, setDarkMode] = useState(false)
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('darkMode')
+      if (saved !== null) return JSON.parse(saved)
+      return window.matchMedia('(prefers-color-scheme: dark)').matches
+    }
+    return false
+  })
 
   useEffect(() => {
     if (darkMode) {
@@ -10,6 +17,7 @@ export default function Layout({ children }) {
     } else {
       document.documentElement.classList.remove('dark')
     }
+    localStorage.setItem('darkMode', JSON.stringify(darkMode))
   }, [darkMode])
 
   return (

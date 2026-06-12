@@ -88,7 +88,7 @@ export default function RedditFetcher({ onFetch }) {
     <div className="flex flex-col gap-2 w-full mb-2">
       <div className="flex gap-2">
         <div className="relative flex-1">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-outline">
             <Link size={16} />
           </div>
           <input
@@ -97,13 +97,13 @@ export default function RedditFetcher({ onFetch }) {
             onChange={(e) => setUrl(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleFetch()}
             placeholder="Paste Reddit post URL..."
-            className="w-full bg-gray-900 border border-gray-800 rounded-lg py-2 pl-10 pr-4 text-gray-200 focus:outline-none focus:border-gray-600 focus:ring-1 focus:ring-gray-600 transition-all text-sm"
+            className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg py-2 pl-10 pr-4 text-on-surface focus:outline-none focus:border-outline focus:ring-1 focus:ring-outline transition-all text-sm"
           />
         </div>
         <button
           onClick={handleFetch}
           disabled={isLoading || !url.trim()}
-          className="px-4 py-2 bg-gray-800 text-gray-200 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition-colors whitespace-nowrap cursor-pointer"
+          className="px-4 py-2 bg-surface-variant text-on-surface-variant hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition-opacity whitespace-nowrap cursor-pointer"
         >
           {isLoading ? 'Fetching...' : 'Fetch from Reddit'}
         </button>

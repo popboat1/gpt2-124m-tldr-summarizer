@@ -96,13 +96,13 @@ export default function Summarizer() {
                 <div className="flex bg-surface-container-low rounded-lg p-1 border border-outline-variant">
                   <button 
                     onClick={() => setSelectedModel('PPO Aligned')}
-                    className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer ${selectedModel === 'PPO Aligned' ? 'bg-white shadow-sm text-primary border border-outline-variant' : 'text-on-surface-variant hover:text-on-surface'}`}
+                    className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer ${selectedModel === 'PPO Aligned' ? 'bg-surface-bright shadow-sm text-primary border border-outline-variant' : 'text-on-surface-variant hover:text-on-surface'}`}
                   >
                     PPO Aligned
                   </button>
                   <button 
                     onClick={() => setSelectedModel('SFT Baseline')}
-                    className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer ${selectedModel === 'SFT Baseline' ? 'bg-white shadow-sm text-primary border border-outline-variant' : 'text-on-surface-variant hover:text-on-surface'}`}
+                    className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer ${selectedModel === 'SFT Baseline' ? 'bg-surface-bright shadow-sm text-primary border border-outline-variant' : 'text-on-surface-variant hover:text-on-surface'}`}
                   >
                     SFT Baseline
                   </button>
