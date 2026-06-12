@@ -33,7 +33,7 @@ export default function LossChart({ dataUrl }) {
           <YAxis domain={['auto', 'auto']} tick={{fontSize: 12}} stroke="#857467" />
           <Tooltip contentStyle={{backgroundColor: 'var(--color-surface-container-lowest)', borderColor: 'var(--color-outline-variant)', borderRadius: '4px', color: 'var(--color-on-surface)'}} />
           <Line type="monotone" dataKey="loss" stroke="#884e08" strokeWidth={2} dot={false} />
-          <Line type="monotone" dataKey="val_loss" stroke="#ffb876" strokeWidth={2} dot={false} />
+          <Line type="monotone" dataKey="val_loss" stroke="#ffb876" strokeWidth={2} dot={false} connectNulls={true} />
         </LineChart>
       </ResponsiveContainer>
     </div>

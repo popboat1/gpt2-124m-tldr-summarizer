@@ -23,15 +23,15 @@ export default function Layout({ children }) {
   return (
     <div className="min-h-screen flex flex-col font-body-md text-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
       <header className="sticky top-0 bg-background docked full-width border-b border-outline-variant flat no-shadows z-50">
-        <div className="flex justify-between items-center w-full px-lg py-md max-w-container-max mx-auto">
-          <div className="font-headline-md text-headline-md font-bold text-on-background tracking-tight">
+        <div className="flex justify-between items-center w-full px-lg py-md max-w-container-max mx-auto relative">
+          <div className="font-headline-md text-headline-md font-bold text-on-background tracking-tight z-10">
             GPT-2 Summarizer
           </div>
-          <nav className="hidden md:flex gap-lg items-center">
+          <nav className="hidden md:flex gap-lg items-center absolute left-1/2 -translate-x-1/2">
             <Link className="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-low transition-all px-xs py-xs rounded cursor-pointer" to="/">Home</Link>
             <Link className="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-low transition-all px-xs py-xs rounded cursor-pointer" to="/summarizer">Playground</Link>
           </nav>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 z-10">
             <button 
               onClick={() => setDarkMode(!darkMode)}
               className="bg-surface-container-high dark:bg-background text-on-surface hover:text-primary transition-colors hover:bg-surface-container-highest rounded-full w-10 h-10 flex items-center justify-center cursor-pointer border border-outline-variant"
