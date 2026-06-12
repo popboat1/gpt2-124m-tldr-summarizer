@@ -1,14 +1,12 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Settings, FileText, Zap, MessageSquare, CheckCircle } from 'lucide-react'
-import SettingsSidebar from '../components/SettingsSidebar'
 import RedditFetcher from '../components/RedditFetcher'
 
 export default function Summarizer() {
   const [inputText, setInputText] = useState('')
   const [outputText, setOutputText] = useState('')
   const [metrics, setMetrics] = useState({ tokensPerSec: 0 })
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [inferenceSettings, setInferenceSettings] = useState({ temp: 0.7, topK: 40 })
   
   const [selectedModel, setSelectedModel] = useState('PPO Aligned')
@@ -29,13 +27,6 @@ export default function Summarizer() {
         <aside className="w-full md:w-64 flex flex-col gap-md border-r border-outline-variant pr-md flex-shrink-0 h-full overflow-y-auto">
           <div className="font-headline-md text-headline-md text-on-background flex justify-between items-center mb-sm">
             Data Buckets
-            <button 
-              aria-label="Settings"
-              onClick={() => setIsSettingsOpen(true)}
-              className="p-1 text-secondary hover:text-primary transition-colors rounded-md hover:bg-surface-container-low cursor-pointer"
-            >
-              <Settings size={20} />
-            </button>
           </div>
           
           <RedditFetcher onFetch={(text) => setInputText(text)} />
@@ -101,19 +92,29 @@ export default function Summarizer() {
               />
             </div>
             <div className="flex justify-between items-center">
-              <div className="flex bg-surface-container-low rounded-lg p-1 border border-outline-variant">
-                <button 
-                  onClick={() => setSelectedModel('PPO Aligned')}
-                  className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer ${selectedModel === 'PPO Aligned' ? 'bg-white shadow-sm text-primary border border-outline-variant' : 'text-on-surface-variant hover:text-on-surface'}`}
-                >
-                  PPO Aligned
-                </button>
-                <button 
-                  onClick={() => setSelectedModel('SFT Baseline')}
-                  className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer ${selectedModel === 'SFT Baseline' ? 'bg-white shadow-sm text-primary border border-outline-variant' : 'text-on-surface-variant hover:text-on-surface'}`}
-                >
-                  SFT Baseline
-                </button>
+              <div className="flex items-center gap-md">
+                <div className="flex bg-surface-container-low rounded-lg p-1 border border-outline-variant">
+                  <button 
+                    onClick={() => setSelectedModel('PPO Aligned')}
+                    className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer ${selectedModel === 'PPO Aligned' ? 'bg-white shadow-sm text-primary border border-outline-variant' : 'text-on-surface-variant hover:text-on-surface'}`}
+                  >
+                    PPO Aligned
+                  </button>
+                  <button 
+                    onClick={() => setSelectedModel('SFT Baseline')}
+                    className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer ${selectedModel === 'SFT Baseline' ? 'bg-white shadow-sm text-primary border border-outline-variant' : 'text-on-surface-variant hover:text-on-surface'}`}
+                  >
+                    SFT Baseline
+                  </button>
+                </div>
+                
+                <div className="flex items-center gap-sm">
+                  <label className="text-body-md text-on-surface-variant whitespace-nowrap">Temp: {inferenceSettings.temp}</label>
+                  <input type="range" min="0" max="2" step="0.1" value={inferenceSettings.temp} onChange={(e) => setInferenceSettings({...inferenceSettings, temp: parseFloat(e.target.value)})} className="w-24 accent-primary" />
+                  
+                  <label className="text-body-md text-on-surface-variant whitespace-nowrap ml-sm">Top K: {inferenceSettings.topK}</label>
+                  <input type="range" min="1" max="100" value={inferenceSettings.topK} onChange={(e) => setInferenceSettings({...inferenceSettings, topK: parseInt(e.target.value)})} className="w-24 accent-primary" />
+                </div>
               </div>
               <button 
                 onClick={handleGenerate}
@@ -173,12 +174,6 @@ export default function Summarizer() {
         </div>
       </footer>
 
-      <SettingsSidebar 
-        isOpen={isSettingsOpen} 
-        onClose={() => setIsSettingsOpen(false)} 
-        settings={inferenceSettings} 
-        onUpdate={setInferenceSettings} 
-      />
     </>
   )
 }

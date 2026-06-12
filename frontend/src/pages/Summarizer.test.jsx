@@ -14,7 +14,7 @@ describe('Summarizer Page', () => {
     expect(screen.getByRole('button', { name: /Summarize/i })).toBeInTheDocument()
     expect(screen.getByText(/tokens\/sec/i)).toBeInTheDocument()
     expect(screen.getByText(/Summary will appear here.../i)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Settings' })).toBeInTheDocument()
+    expect(screen.getByText(/Temp: 0.7/i)).toBeInTheDocument()
   })
 
   it('updates input text when typed into', async () => {
