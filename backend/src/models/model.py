@@ -26,7 +26,7 @@ class CausalSelfAttention(nn.Module):
         # not really a 'bias' more of a mask, but following the OpenAI/HF naming though
         self.register_buffer("bias", torch.tril(torch.ones(config.block_size, config.block_size)).view(1, 1, config.block_size, config.block_size))
         
-    def forward(self, x):
+    def forward(self, x, past_key_value=None, use_cache=False):
         B, T, C = x.size() # batch size, sequence length, embedding dimensionality (n_embd)
         # calculates query, key, values for all heads in batch and move head forward to be the batch
         # nh is "number of heads", hs is "head size", and C (number of channels) = nh * hs
@@ -36,18 +36,24 @@ class CausalSelfAttention(nn.Module):
         k = k.view(B, T, self.n_head, C // self.n_head).transpose(1, 2) # (B, nh, T, hs)
         q = q.view(B, T, self.n_head, C // self.n_head).transpose(1, 2) # (B, nh, T, hs)
         v = v.view(B, T, self.n_head, C // self.n_head).transpose(1, 2) # (B, nh, T, hs)
-        # attention (materializes the large (T,T) matrix for all the queries and keys)
         
-        # att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
-        # att = att.masked_fill(self.bias[:, :, :T, :T] == 0, float('-inf'))
-        # att = F.softmax(att, dim=-1)
-        # y = att @ v # (B, nh, T, T) x (B, nh, T, S) ---> (B, nh, T, S)
-        y = F.scaled_dot_product_attention(q, k, v, is_causal=True) # flash attention
+        if past_key_value is not None:
+            past_k, past_v = past_key_value
+            k = torch.cat([past_k, k], dim=-2)
+            v = torch.cat([past_v, v], dim=-2)
+            
+        present = (k, v) if use_cache else None
+        
+        # When caching, if T == 1, we are just attending to the past and the single new query. 
+        # Causal mask is only needed if T > 1. 
+        is_causal = (T > 1) and (past_key_value is None)
+        
+        y = F.scaled_dot_product_attention(q, k, v, is_causal=is_causal) # flash attention
         
         y = y.transpose(1, 2).contiguous().view(B, T, C) # re-assemble all heads outputs side by side
         # output projection
         y = self.c_proj(y)
-        return y
+        return y, present
 
 class MLP(nn.Module):
     def __init__(self, config):
@@ -71,10 +77,11 @@ class Block(nn.Module):
         self.ln_2 = nn.LayerNorm(config.n_embd)
         self.mlp = MLP(config)
         
-    def forward(self, x):
-        x = x + self.attn(self.ln_1(x))
+    def forward(self, x, past_key_value=None, use_cache=False):
+        attn_out, present = self.attn(self.ln_1(x), past_key_value=past_key_value, use_cache=use_cache)
+        x = x + attn_out
         x = x + self.mlp(self.ln_2(x))
-        return x
+        return x, present
     
 class GPT(nn.Module):
     def __init__(self, config):
@@ -106,24 +113,41 @@ class GPT(nn.Module):
         elif isinstance(module, nn.Embedding):
             torch.nn.init.normal_(module.weight, mean=0.0, std=std)
         
-    def forward(self, idx, targets=None):
+    def forward(self, idx, targets=None, past_key_values=None, use_cache=False):
         # idx is of shape (B, T)
         B, T = idx.size()
-        assert T <= self.config.block_size, f"Cannot forward sequence of length {T}, block size is only {self.config.block_size}"
-        # forward the token and posisition embeddings
-        pos = torch.arange(0, T, dtype=torch.long, device=idx.device) # shape (T)
+        
+        # Calculate offset if we have past_key_values
+        past_length = 0
+        if past_key_values is not None:
+            past_length = past_key_values[0][0].size(-2)
+            
+        assert T + past_length <= self.config.block_size, f"Cannot forward sequence of length {T + past_length}, block size is only {self.config.block_size}"
+        
+        # position offsets
+        pos = torch.arange(past_length, past_length + T, dtype=torch.long, device=idx.device) # shape (T)
         pos_emb = self.transformer.wpe(pos) # position embeddings of shape (T, n_embd)
         tok_emb = self.transformer.wte(idx) # token embeddings of shape (B, T, n_embd)
         x = tok_emb + pos_emb
+        
         # forward the blocks of the transformer
-        for block in self.transformer.h:
-            x = block(x)
+        presents = [] if use_cache else None
+        for i, block in enumerate(self.transformer.h):
+            past_kv = past_key_values[i] if past_key_values is not None else None
+            x, present = block(x, past_key_value=past_kv, use_cache=use_cache)
+            if use_cache:
+                presents.append(present)
+                
         # forward the final layernorm and the classifier
         x = self.transformer.ln_f(x)
         logits = self.lm_head(x) # (B, T, vocab_size)
+        
         loss = None
         if targets is not None:
             loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1))
+            
+        if use_cache:
+            return logits, loss, tuple(presents)
         return logits, loss
         
     @classmethod
