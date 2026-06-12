@@ -8,14 +8,12 @@ import requests
 from fastapi.middleware.cors import CORSMiddleware
 import random
 from huggingface_hub import hf_hub_download
-import sys
-
-# Ensure the backend directory is in the path so we can import 'src'
-backend_dir = os.path.dirname(os.path.abspath(__file__))
-if backend_dir not in sys.path:
-    sys.path.insert(0, backend_dir)
-
-from src.inference import generate_text_stream
+try:
+    # When running from the project root (e.g., Docker / Hugging Face)
+    from backend.src.inference import generate_text_stream
+except ModuleNotFoundError:
+    # When running locally from inside the backend/ folder
+    from src.inference import generate_text_stream
 
 app = FastAPI()
 

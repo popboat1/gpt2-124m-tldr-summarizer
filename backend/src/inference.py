@@ -2,7 +2,7 @@ import time
 import torch
 import tiktoken
 import torch.nn.functional as F
-from src.models.model import GPT, GPTConfig
+from .models.model import GPT, GPTConfig
 
 def generate_text_stream(prompt, model_path, max_new_tokens=50, temperature=0.5, top_k=40, repetition_penalty=1.0, stop_on_eot=False, num_probs=0, device='cpu'):
     # load checkpoint safely onto the requested hardware device

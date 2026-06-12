@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from src.models.model import GPT, GPTConfig
+from .model import GPT, GPTConfig
 
 class GPTRewardModel(nn.Module):
     def __init__(self, config):
